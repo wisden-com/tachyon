@@ -22,3 +22,8 @@ It's really that simple!
 |`webp`|Boolean, 1|Force WebP format.|
 |`lb`|String, "w,h"|Add letterboxing effect to images, by scaling them to width, height while maintaining the aspect ratio and filling the rest with black or `background`.|
 |`background`|String|Add background color via name (red) or hex value (%23ff0000). Don't forget to escape # as `%23`.|
+
+
+## WebP conversion
+
+If the webp parameter is not specified, Tachyon will automatically convert to webp if the request headers indicate that the client can support it - typically if the `Accept` header contains `image/webp`.
