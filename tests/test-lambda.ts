@@ -3,6 +3,9 @@ import { test, expect } from '@jest/globals';
 import { handler } from '../src/lambda-handler';
 
 import animatedGifLambdaEvent from './events/animated-gif.json';
+import acceptWebpLambdaEvent from './events/accept-webp.json';
+import acceptWebpCustomHeaderLambdaEvent from './events/accept-webp-custom.json';
+import notAcceptWebpLambdaEvent from './events/not-accept-webp.json';
 
 process.env.S3_REGION = 'us-east-1';
 process.env.S3_BUCKET = 'hmn-uploads';
@@ -22,6 +25,27 @@ test( 'Test image not found', async () => {
 
 	expect( testResponseStream.metadata.statusCode ).toBe( 404 );
 	expect( testResponseStream.contentType ).toBe( 'text/html' );
+} );
+
+test( 'Test convert to webp with accept:image/webp header', async () => {
+	const testResponseStream = new TestResponseStream();
+	await handler( acceptWebpLambdaEvent, testResponseStream );
+
+	expect( testResponseStream.contentType ).toBe( 'image/webp' );
+} );
+
+test( 'Test convert to webp with x-webp header', async () => {
+	const testResponseStream = new TestResponseStream();
+	await handler( acceptWebpCustomHeaderLambdaEvent, testResponseStream );
+
+	expect( testResponseStream.contentType ).toBe( 'image/webp' );
+} );
+
+test( 'Test do not convert to webp', async () => {
+	const testResponseStream = new TestResponseStream();
+	await handler( notAcceptWebpLambdaEvent, testResponseStream );
+
+	expect( testResponseStream.contentType ).toBe( 'image/jpeg' );
 } );
 
 /**
