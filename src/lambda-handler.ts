@@ -28,7 +28,10 @@ const streamify_handler: StreamifyHandler = async ( event, response ) => {
 	};
 	args.key = key;
 	if ( typeof args.webp === 'undefined' ) {
-		args.webp = !! ( event.headers && Object.keys( event.headers ).find( key => key.toLowerCase() === 'x-webp' ) );
+		args.webp = !! ( event.headers && Object.keys( event.headers ).find( key => {
+			const lowerKey = key.toLowerCase();
+			return (lowerKey === 'x-webp') || (lowerKey === 'accept' && event.headers[key].includes('image/webp'));
+		}));
 	}
 	const refererHeaderKey = Object.keys(event.headers || {}).find(h => h.toLowerCase() === 'referer');
 	if (refererHeaderKey) {
